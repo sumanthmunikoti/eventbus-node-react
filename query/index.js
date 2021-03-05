@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const axios = require('axios')
+const axios = require('axios');
 
 const app = express();
 app.use(bodyParser.json());
@@ -34,7 +34,7 @@ const handleEvent = (type, data) => {
     comment.status = status;
     comment.content = content;
   }
-}
+};
 
 app.get('/posts', (req, res) => {
   res.send(posts);
@@ -42,20 +42,20 @@ app.get('/posts', (req, res) => {
 
 app.post('/events', (req, res) => {
   const { type, data } = req.body;
-  handleEvent(type, data)
+
+  handleEvent(type, data);
+
   res.send({});
 });
 
-//get all events when query service begins
 app.listen(4002, async () => {
   console.log('Listening on 4002');
-  
-  const res = await axios.get('http://localhost:4005/events')
 
-  for(let event of res.data) {
-    console.log('Processing event...', event.type)
+  const res = await axios.get('http://event-bus-srv:4005/events');
 
-    handleEvent(event.type, event.data)
+  for (let event of res.data) {
+    console.log('Processing event:', event.type);
+
+    handleEvent(event.type, event.data);
   }
-
 });
